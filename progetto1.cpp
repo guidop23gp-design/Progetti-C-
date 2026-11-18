@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <clocale>
 
 using namespace std;
 
@@ -316,6 +317,11 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
         {
             cout << "Errore nell'aggiunta del prodotto: codice duplicato." << endl;
             delete p11;
+        }
+
+        if (!negozio1.aggiungiProdotto(nullptr))
+        {
+            cout << "Errore nell'aggiunta del prodotto: puntatore nullo." << endl;
         }
 
         cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
