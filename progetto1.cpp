@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <clocale>
+#include <map>
 
 using namespace std;
 
@@ -99,6 +100,7 @@ class Negozio
 {
     private:
         vector<Prodotti*> catalogo;
+        map<string, int> giacenze;
     public:
         Negozio() = default;
 
@@ -124,7 +126,7 @@ class Negozio
             return it != catalogo.end() ? *it : nullptr;
         }
 
-        bool aggiungiProdotto(Prodotti* nuovoProdotto)
+        bool aggiungiProdotto(Prodotti* nuovoProdotto, int quantitaIniziale = 0)
         {
             if (nuovoProdotto == nullptr)
             {
@@ -134,9 +136,17 @@ class Negozio
             if (cercaProdotto(nuovoProdotto->getCodice()) != nullptr)
             {
                 return false;
+            }     
+
+            if (quantitaIniziale < 0)
+            {
+                return false;
             }
 
             catalogo.push_back(nuovoProdotto);
+            
+            giacenze[nuovoProdotto->getCodice()] = quantitaIniziale;
+
             return true;
         }
 
@@ -188,7 +198,9 @@ class Negozio
             }
 
             Prodotti* prodottoDaRimuovere = *it;
+            string codiceDaRimuovere = prodottoDaRimuovere->getCodice();
             catalogo.erase(it);
+            giacenze.erase(codiceDaRimuovere);
             delete prodottoDaRimuovere;
             return true;
         }
@@ -219,35 +231,25 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
         Negozio negozio1;
 
         Prodotti* p1 = new Smartphone("S002", "Samsung Galaxy s23", "Smartphone", 899.99, 256);
-        if(negozio1.aggiungiProdotto(p1))
+        if (!negozio1.aggiungiProdotto(p1, 15))
         {
-            cout << "Prodotto aggiunto con successo." << endl;
-        }
-        else
-        {
-            cout << "Errore nell'aggiunta del prodotto." << endl;
             delete p1;
         }
 
         Prodotti* p2 = new Computer("C002", "Dell XPS 13", "Computer", 1499.99, 16);
-        if(negozio1.aggiungiProdotto(p2))
+        if (!negozio1.aggiungiProdotto(p2, 0))
         {
-            cout << "Prodotto aggiunto con successo." << endl;
-        }
-        else
-        {
-            cout << "Errore nell'aggiunta del prodotto." << endl;
             delete p2;
         }
 
         Prodotti* p3 = new Smartphone("S003", "Google Pixel 8", "Smartphone", 799.99, 128);
-        if(negozio1.aggiungiProdotto(p3))
+        if (negozio1.aggiungiProdotto(p3, -5))
         {
-            cout << "Prodotto aggiunto con successo." << endl;
+            cout << "Prodotto inserito" << endl;
         }
         else
         {
-            cout << "Errore nell'aggiunta del prodotto." << endl;
+            cout << "Errore" << endl;
             delete p3;
         }
 
@@ -369,54 +371,6 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
         if (!negozio1.aggiungiProdotto(nullptr))
         {
             cout << "Errore nell'aggiunta del prodotto: puntatore nullo." << endl;
-        }
-
-        if (negozio1.modificaPrezzo("C002", 0))
-        {
-            cout << "Prezzo modificato con successo." << endl;
-        }
-        else
-        {
-            cout << "Errore nella modifica del prezzo: prezzo non valido." << endl;
-        }
-        cout << endl;
-
-        negozio1.modificaPrezzo("C002", 1399.99);
-        cout << endl;
-
-        negozio1.modificaPrezzo("X002", 1299.99);
-        cout << endl;
-
-        negozio1.modificaPrezzo("C003", -230.50);
-        cout << endl;
-
-        cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
-
-        if (negozio1.rimuoviProdotto("S003"))
-        {
-            cout << "Prodotto S003 rimosso con successo." << endl;
-        }
-        else
-        {
-            cout << "Errore nella rimozione del prodotto S003." << endl;
-        }
-
-        if (negozio1.rimuoviProdotto("S003"))
-        {
-            cout << "Prodotto S003 rimosso con successo." << endl;
-        }
-        else
-        {
-            cout << "Errore nella rimozione del prodotto S003." << endl;
-        }
-
-        if (negozio1.rimuoviProdotto("X999"))
-        {
-            cout << "Prodotto X999 rimosso con successo." << endl;
-        }
-        else
-        {
-            cout << "Errore nella rimozione del prodotto X999." << endl;
         }
 
         cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
