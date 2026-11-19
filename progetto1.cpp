@@ -39,6 +39,19 @@ class Prodotti
         const string& getCategoria() const {return categoria;}
         double getPrezzo() const {return prezzo;}
 
+        void setCodice(const string& c) {codice = c;}
+        void setNome(const string& n) {nome = n;}
+        void setCategoria(const string& cat) {categoria = cat;}
+        bool setPrezzo(double p)
+        {
+            if (p <= 0)
+            {
+                return false;
+            }
+            prezzo = p;
+            return true;
+        }
+        
         virtual void stampaDettagli() const = 0;
 
         bool operator==(const Prodotti& other) const
@@ -144,7 +157,32 @@ class Negozio
             }
         }
 
+        Prodotti* cercaProdotto(const string& codice)
+        {
+            auto it = find_if(catalogo.begin(), catalogo.end(), [&codice](Prodotti* prodotto)
+            {
+                return prodotto != nullptr && prodotto->getCodice() == codice;
+            });
+            return it != catalogo.end() ? *it : nullptr;
+        }
 
+        bool modificaPrezzo(const string& codice, double nuovoPrezzo)
+        {
+            Prodotti* prodotto = cercaProdotto(codice);
+            if (prodotto == nullptr)
+            {
+                return false;
+            }
+            if (nuovoPrezzo <= 0)
+            {
+                cout << "Prezzo non valido. La modifica non è stata effettuata." << endl;
+                return false;
+            }
+            prodotto->setPrezzo(nuovoPrezzo);
+            cout << "Prezzo modificato con successo." << endl;
+            cout << "Nuovo prezzo del prodotto " << prodotto->getNome()  << ": " << prodotto->getPrezzo() << endl;
+            return true;
+        }
 };
 
 int main() { setlocale(LC_ALL, "it_IT.UTF-8");
@@ -323,6 +361,18 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
         {
             cout << "Errore nell'aggiunta del prodotto: puntatore nullo." << endl;
         }
+
+        negozio1.modificaPrezzo("C002", 0);
+        cout << endl;
+
+        negozio1.modificaPrezzo("C002", 1399.99);
+        cout << endl;
+
+        negozio1.modificaPrezzo("X002", 1299.99);
+        cout << endl;
+
+        negozio1.modificaPrezzo("C003", -230.50);
+        cout << endl;
 
         cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
     }
