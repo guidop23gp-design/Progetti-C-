@@ -39,7 +39,6 @@ class Prodotti
         const string& getCategoria() const {return categoria;}
         double getPrezzo() const {return prezzo;}
 
-        void setCodice(const string& c) {codice = c;}
         void setNome(const string& n) {nome = n;}
         void setCategoria(const string& cat) {categoria = cat;}
         bool setPrezzo(double p)
@@ -174,6 +173,24 @@ class Negozio
                 return false;
             }
             return prodotto->setPrezzo(nuovoPrezzo);
+        }
+
+        bool rimuoviProdotto(const string& codice)
+        {
+            auto it = find_if(catalogo.begin(), catalogo.end(), [&codice](Prodotti* prodotto)
+            {
+                return prodotto != nullptr && prodotto->getCodice() == codice;
+            });
+
+            if (it == catalogo.end())
+            {
+                return false;
+            }
+
+            Prodotti* prodottoDaRimuovere = *it;
+            catalogo.erase(it);
+            delete prodottoDaRimuovere;
+            return true;
         }
 };
 
@@ -372,6 +389,35 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
 
         negozio1.modificaPrezzo("C003", -230.50);
         cout << endl;
+
+        cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
+
+        if (negozio1.rimuoviProdotto("S003"))
+        {
+            cout << "Prodotto S003 rimosso con successo." << endl;
+        }
+        else
+        {
+            cout << "Errore nella rimozione del prodotto S003." << endl;
+        }
+
+        if (negozio1.rimuoviProdotto("S003"))
+        {
+            cout << "Prodotto S003 rimosso con successo." << endl;
+        }
+        else
+        {
+            cout << "Errore nella rimozione del prodotto S003." << endl;
+        }
+
+        if (negozio1.rimuoviProdotto("X999"))
+        {
+            cout << "Prodotto X999 rimosso con successo." << endl;
+        }
+        else
+        {
+            cout << "Errore nella rimozione del prodotto X999." << endl;
+        }
 
         cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
     }
