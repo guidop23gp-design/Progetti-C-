@@ -173,15 +173,7 @@ class Negozio
             {
                 return false;
             }
-            if (nuovoPrezzo <= 0)
-            {
-                cout << "Prezzo non valido. La modifica non è stata effettuata." << endl;
-                return false;
-            }
-            prodotto->setPrezzo(nuovoPrezzo);
-            cout << "Prezzo modificato con successo." << endl;
-            cout << "Nuovo prezzo del prodotto " << prodotto->getNome()  << ": " << prodotto->getPrezzo() << endl;
-            return true;
+            return prodotto->setPrezzo(nuovoPrezzo);
         }
 };
 
@@ -362,7 +354,14 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
             cout << "Errore nell'aggiunta del prodotto: puntatore nullo." << endl;
         }
 
-        negozio1.modificaPrezzo("C002", 0);
+        if (negozio1.modificaPrezzo("C002", 0))
+        {
+            cout << "Prezzo modificato con successo." << endl;
+        }
+        else
+        {
+            cout << "Errore nella modifica del prezzo: prezzo non valido." << endl;
+        }
         cout << endl;
 
         negozio1.modificaPrezzo("C002", 1399.99);
