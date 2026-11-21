@@ -204,24 +204,44 @@ class Negozio
             delete prodottoDaRimuovere;
             return true;
         }
+
+        bool modificaGiacenza(const string& codice, int nuovaQuantita)
+        {
+            if (nuovaQuantita < 0)
+            {
+                cout << "Errore, quantità inserita errata" << endl;
+                return false;
+            }
+
+            auto it = giacenze.find(codice);
+
+            if (it == giacenze.end())
+            {
+                return false;
+            }
+
+            it->second = nuovaQuantita;
+
+            cout << "Giacenza prodotto " << it->first << " modificata correttamente!" << endl;
+            cout << "Nuova giacenza: " << it->second << endl;
+            
+            return true;
+        }
+
+        int getGiacenza(const string& codice) const
+        {
+            auto it = giacenze.find(codice);
+
+            if (it == giacenze.end())
+            {
+                return -1;
+            }
+
+            return it->second;
+        }
 };
 
 int main() { setlocale(LC_ALL, "it_IT.UTF-8");
-
-    cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
-
-    {
-        Smartphone s1 ("S001", "iPhone 15", "Smartphone", 999.99, 128);
-        Computer c1 ("C001", "MacBook Pro", "Computer", 1999.99, 16);
-
-        s1.stampaDettagli();
-        cout << endl;
-
-        c1.stampaDettagli();
-        cout << endl;
-
-        cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
-    }
 
     cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
 
@@ -230,148 +250,55 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
 
         Negozio negozio1;
 
-        Prodotti* p1 = new Smartphone("S002", "Samsung Galaxy s23", "Smartphone", 899.99, 256);
-        if (!negozio1.aggiungiProdotto(p1, 15))
-        {
-            delete p1;
-        }
-
-        Prodotti* p2 = new Computer("C002", "Dell XPS 13", "Computer", 1499.99, 16);
-        if (!negozio1.aggiungiProdotto(p2, 0))
-        {
-            delete p2;
-        }
-
-        Prodotti* p3 = new Smartphone("S003", "Google Pixel 8", "Smartphone", 799.99, 128);
-        if (negozio1.aggiungiProdotto(p3, -5))
-        {
-            cout << "Prodotto inserito" << endl;
-        }
-        else
-        {
-            cout << "Errore" << endl;
-            delete p3;
-        }
-
-        Prodotti* p4 = new Computer("C003", "HP Spectre x360", "Computer", 1299.99, 16);
-        if(negozio1.aggiungiProdotto(p4))
+        Prodotti* p12 = new Computer("C009", "ASUS Vivobook", "Computer", 979.99, 16);
+        if(negozio1.aggiungiProdotto(p12, 15))
         {
             cout << "Prodotto aggiunto con successo." << endl;
         }
         else
         {
-            cout << "Errore nell'aggiunta del prodotto." << endl;
-            delete p4;
+            cout << "Errore nell'aggiunta del prodotto" << endl;
+            delete p12;
         }
 
-        Prodotti* p5 = new Smartphone("S004", "OnePlus 11", "Smartphone", 699.99, 256);
-        if(negozio1.aggiungiProdotto(p5))
+        negozio1.modificaGiacenza("C009", 20);
+
+        Prodotti* p13 = new Smartphone("S003", "iPhone 15", "Smartphone", 500.00, 128);
+        if(negozio1.aggiungiProdotto(p13, 0))
         {
             cout << "Prodotto aggiunto con successo." << endl;
         }
         else
         {
-            cout << "Errore nell'aggiunta del prodotto." << endl;
-            delete p5;
+            cout << "Errore nell'aggiunta del prodotto" << endl;
+            delete p13;
         }
 
-        Prodotti* p6 = new Computer("C004", "Lenovo ThinkPad X1", "Computer", 1599.99, 32);
-        if(negozio1.aggiungiProdotto(p6))
+        negozio1.modificaGiacenza("S003", 5);
+
+        Prodotti* p14 = new Computer("C002", "MacBook 5", "Computer", 1200.00, 16);
+        if(negozio1.aggiungiProdotto(p14, 10))
         {
             cout << "Prodotto aggiunto con successo." << endl;
         }
         else
         {
-            cout << "Errore nell'aggiunta del prodotto." << endl;
-            delete p6;
+            cout << "Errore nell'aggiunta del prodotto" << endl;
+            delete p14;
         }
 
-        Prodotti* p7 = new Smartphone("S005", "Sony Xperia 1 IV", "Smartphone", 999.99, 512);
-        if(negozio1.aggiungiProdotto(p7))
-        {
-            cout << "Prodotto aggiunto con successo." << endl;
-        }
-        else
-        {
-            cout << "Errore nell'aggiunta del prodotto." << endl;
-            delete p7;
-        }
+        negozio1.modificaGiacenza("C002", -5);
 
-        Prodotti* p8 = new Computer("C005", "Asus ROG Zephyrus G14", "Computer", 1799.99, 16);
-        if(negozio1.aggiungiProdotto(p8))
-        {
-            cout << "Prodotto aggiunto con successo." << endl;
-        }
-        else
-        {
-            cout << "Errore nell'aggiunta del prodotto." << endl;
-            delete p8;
-        }
+        negozio1.modificaGiacenza("X002", 10);
 
-        Prodotti* p9 = new Smartphone("S006", "Xiaomi Mi 13", "Smartphone", 599.99, 128);
-        if(negozio1.aggiungiProdotto(p9))
-        {
-            cout << "Prodotto aggiunto con successo." << endl;
-        }
-        else
-        {
-            cout << "Errore nell'aggiunta del prodotto." << endl;
-            delete p9;
-        }
-
-        Prodotti* p10 = new Computer("C006", "Acer Swift 3", "Computer", 899.99, 8);
-        if(negozio1.aggiungiProdotto(p10))
-        {
-            cout << "Prodotto aggiunto con successo." << endl;
-        }
-        else
-        {
-            cout << "Errore nell'aggiunta del prodotto." << endl;
-            delete p10;
-        }
-
-        negozio1.visualizzaCatalogo();
         cout << endl;
 
-        cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
+        cout << negozio1.getGiacenza("S003") << endl;
+        cout << negozio1.getGiacenza("C009") << endl;
+        cout << negozio1.getGiacenza("C002") << endl;
+        cout << negozio1.getGiacenza("X002") << endl;
 
-        const Prodotti* trovato1 = negozio1.cercaProdotto("S003");
-        if (trovato1 != nullptr)
-        {
-            cout << "Prodotto trovato: " << trovato1->getNome() << endl;
-        }
-        else
-        {
-            cout << "Prodotto non trovato." << endl;
-        }
         cout << endl;
-
-        const Prodotti* trovato2 = negozio1.cercaProdotto("X002");
-        if (trovato2 != nullptr)
-        {
-            cout << "Prodotto trovato: " << trovato2->getNome() << endl;
-        }
-        else
-        {
-            cout << "Prodotto non trovato." << endl;
-        }
-        cout << endl;
-
-        Prodotti* p11 = new Smartphone("S002", "Samsung Galaxy s23", "Smartphone", 899.99, 256);
-        if(negozio1.aggiungiProdotto(p11))
-        {
-            cout << "Prodotto aggiunto con successo." << endl;
-        }
-        else
-        {
-            cout << "Errore nell'aggiunta del prodotto: codice duplicato." << endl;
-            delete p11;
-        }
-
-        if (!negozio1.aggiungiProdotto(nullptr))
-        {
-            cout << "Errore nell'aggiunta del prodotto: puntatore nullo." << endl;
-        }
 
         cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
     }
