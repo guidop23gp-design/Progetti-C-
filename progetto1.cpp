@@ -293,11 +293,45 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
 
         cout << endl;
 
-        cout << negozio1.getGiacenza("S003") << endl;
-        cout << negozio1.getGiacenza("C009") << endl;
-        cout << negozio1.getGiacenza("C002") << endl;
-        cout << negozio1.getGiacenza("X002") << endl;
+        int quantita1 = negozio1.getGiacenza("S003");
+        if(quantita1 == -1)
+        {
+            cout << "Prodotto non presente" << endl;
+        }
+        else
+        {
+            cout << "Pezzi disponibili: " << quantita1 << endl;
+        }
 
+        int quantita2 = negozio1.getGiacenza("C009");
+        if(quantita2 == -1)
+        {
+            cout << "Prodotto non presente" << endl;
+        }
+        else
+        {
+            cout << "Pezzi disponibili: " << quantita2 << endl;
+        }        
+        
+        int quantita3 = negozio1.getGiacenza("C002");
+        if(quantita3 == -1)
+        {
+            cout << "Prodotto non presente" << endl;
+        }
+        else
+        {
+            cout << "Pezzi disponibili: " << quantita3 << endl;
+        }        
+        
+        int quantita4 = negozio1.getGiacenza("X002");
+        if(quantita4 == -1)
+        {
+            cout << "Prodotto non presente" << endl;
+        }
+        else
+        {
+            cout << "Pezzi disponibili: " << quantita4 << endl;
+        }
         cout << endl;
 
         cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
