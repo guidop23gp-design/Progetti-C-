@@ -239,6 +239,20 @@ class Negozio
 
             return it->second;
         }
+
+        void visualizzaGiacenze() const
+        {
+            if (giacenze.empty())
+            {
+                cout << "Catalogo vuoto!" << endl;
+            }
+
+            for (const auto& [codice, quantita] : giacenze)
+            {
+                cout << codice << ": " << quantita << endl;
+            }
+
+        }
 };
 
 int main() { setlocale(LC_ALL, "it_IT.UTF-8");
@@ -249,7 +263,7 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
         cout << "Prodotti attvi: " << Prodotti::getProdottiAttivi() << endl << endl;
 
         Negozio negozio1;
-
+        
         Prodotti* p12 = new Computer("C009", "ASUS Vivobook", "Computer", 979.99, 16);
         if(negozio1.aggiungiProdotto(p12, 15))
         {
@@ -333,6 +347,19 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
             cout << "Pezzi disponibili: " << quantita4 << endl;
         }
         cout << endl;
+        
+        negozio1.visualizzaGiacenze();
+
+        negozio1.rimuoviProdotto("S003");
+        int quantita5 = negozio1.getGiacenza("S003");
+        if(quantita5 == -1)
+        {
+            cout << "Prodotto non presente" << endl;
+        }
+        else
+        {
+            cout << "Pezzi disponibili: " << quantita5 << endl;
+        }
 
         cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
     }
