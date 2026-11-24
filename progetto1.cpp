@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <clocale>
 #include <map>
+#include <set>
 
 using namespace std;
 
@@ -41,7 +42,6 @@ class Prodotti
         double getPrezzo() const {return prezzo;}
 
         void setNome(const string& n) {nome = n;}
-        void setCategoria(const string& cat) {categoria = cat;}
         bool setPrezzo(double p)
         {
             if (p <= 0)
@@ -101,6 +101,7 @@ class Negozio
     private:
         vector<Prodotti*> catalogo;
         map<string, int> giacenze;
+        set<string> categorie;
     public:
         Negozio() = default;
 
@@ -146,6 +147,8 @@ class Negozio
             catalogo.push_back(nuovoProdotto);
             
             giacenze[nuovoProdotto->getCodice()] = quantitaIniziale;
+
+            categorie.insert(nuovoProdotto->getCategoria());
 
             return true;
         }
@@ -198,10 +201,28 @@ class Negozio
             }
 
             Prodotti* prodottoDaRimuovere = *it;
+
             string codiceDaRimuovere = prodottoDaRimuovere->getCodice();
+            
+            string categoriaDaRimuovere = prodottoDaRimuovere->getCategoria();
+
             catalogo.erase(it);
+            
             giacenze.erase(codiceDaRimuovere);
+            
             delete prodottoDaRimuovere;
+
+            auto itCategoria = find_if(catalogo.begin(), catalogo.end(), [&categoriaDaRimuovere] (const Prodotti* prodotto)
+                {
+                    return prodotto != nullptr && prodotto->getCategoria() == categoriaDaRimuovere;
+                }
+            );
+
+            if (itCategoria == catalogo.end())
+            {
+                categorie.erase(categoriaDaRimuovere);
+            }
+            
             return true;
         }
 
@@ -245,13 +266,39 @@ class Negozio
             if (giacenze.empty())
             {
                 cout << "Catalogo vuoto!" << endl;
+                return;
             }
 
             for (const auto& [codice, quantita] : giacenze)
             {
                 cout << codice << ": " << quantita << endl;
             }
+        }
 
+        void visualizzaCategorie() const
+        {
+            if (categorie.empty())
+            {
+                cout << "Nessuna categoria disponibile." << endl;
+                return;
+            }
+
+            for (const string& categoria : categorie)
+            {
+                cout << categoria << endl;
+            }
+        }
+
+        bool categoriaPresente(const string& categoria) const
+        {
+            auto it = categorie.find(categoria);
+
+            if (it == categorie.end())
+            {
+                return false;
+            }
+
+            return true;
         }
 };
 
@@ -275,8 +322,6 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
             delete p12;
         }
 
-        negozio1.modificaGiacenza("C009", 20);
-
         Prodotti* p13 = new Smartphone("S003", "iPhone 15", "Smartphone", 500.00, 128);
         if(negozio1.aggiungiProdotto(p13, 0))
         {
@@ -287,8 +332,6 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
             cout << "Errore nell'aggiunta del prodotto" << endl;
             delete p13;
         }
-
-        negozio1.modificaGiacenza("S003", 5);
 
         Prodotti* p14 = new Computer("C002", "MacBook 5", "Computer", 1200.00, 16);
         if(negozio1.aggiungiProdotto(p14, 10))
@@ -301,65 +344,45 @@ int main() { setlocale(LC_ALL, "it_IT.UTF-8");
             delete p14;
         }
 
-        negozio1.modificaGiacenza("C002", -5);
+        negozio1.visualizzaCategorie();
 
-        negozio1.modificaGiacenza("X002", 10);
-
-        cout << endl;
-
-        int quantita1 = negozio1.getGiacenza("S003");
-        if(quantita1 == -1)
+        if (negozio1.categoriaPresente("Smartphone"))
         {
-            cout << "Prodotto non presente" << endl;
+            cout << "Categoria trovata!" << endl;
         }
         else
         {
-            cout << "Pezzi disponibili: " << quantita1 << endl;
+            cout << "Categoria non travata!" << endl;
         }
 
-        int quantita2 = negozio1.getGiacenza("C009");
-        if(quantita2 == -1)
+        if (negozio1.categoriaPresente("Tablet"))
         {
-            cout << "Prodotto non presente" << endl;
+            cout << "Categoria trovata!" << endl;
         }
         else
         {
-            cout << "Pezzi disponibili: " << quantita2 << endl;
-        }        
-        
-        int quantita3 = negozio1.getGiacenza("C002");
-        if(quantita3 == -1)
-        {
-            cout << "Prodotto non presente" << endl;
+            cout << "Categoria non trovata!" << endl;
         }
-        else
-        {
-            cout << "Pezzi disponibili: " << quantita3 << endl;
-        }        
-        
-        int quantita4 = negozio1.getGiacenza("X002");
-        if(quantita4 == -1)
-        {
-            cout << "Prodotto non presente" << endl;
-        }
-        else
-        {
-            cout << "Pezzi disponibili: " << quantita4 << endl;
-        }
-        cout << endl;
-        
-        negozio1.visualizzaGiacenze();
 
-        negozio1.rimuoviProdotto("S003");
-        int quantita5 = negozio1.getGiacenza("S003");
-        if(quantita5 == -1)
+        if (negozio1.rimuoviProdotto("C009"))
         {
-            cout << "Prodotto non presente" << endl;
+            cout << "Prodotto eliminato con successo!" << endl;
         }
         else
         {
-            cout << "Pezzi disponibili: " << quantita5 << endl;
+            cout << "Errore nella eliminazione del prodotto" << endl;
         }
+
+        if (negozio1.rimuoviProdotto("C002"))
+        {
+            cout << "Prodotto eliminato con successo!" << endl;
+        }
+        else
+        {
+            cout << "Errore nella eliminazione del prodotto" << endl;
+        }
+
+        negozio1.visualizzaCategorie();
 
         cout << "Prodotti attivi: " << Prodotti::getProdottiAttivi() << endl << endl;
     }
